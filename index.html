@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tehilah EduFun | Learning Made Fun!</title>
+<style>
+:root{--pink:#ff6fae;--purple:#7c5cff;--blue:#42b8ff;--yellow:#ffd75e;--green:#52c98b;--ink:#25304a;--cream:#fffaf2}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(135deg,#fff8ef,#f3f0ff);color:var(--ink)}
+button,input,select,textarea{font:inherit} button{cursor:pointer;border:0}
+header{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;padding:24px 5%;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.logo{font-size:28px;font-weight:900}.tag{opacity:.95}.stars{background:#fff2;border:1px solid #fff5;padding:10px 16px;border-radius:999px;font-weight:800}
+nav{display:flex;gap:8px;padding:12px 5%;background:#fff;box-shadow:0 2px 10px #0000000d;position:sticky;top:0;z-index:5}
+nav button{background:#f1efff;color:#4b3bb8;padding:10px 16px;border-radius:12px;font-weight:800}
+nav button.active{background:var(--purple);color:white}
+main{max-width:1150px;margin:auto;padding:25px 5% 60px}.hero{background:#fff;border-radius:26px;padding:28px;box-shadow:0 8px 30px #493d8b16;margin-bottom:22px}
+.hero h1{margin:0 0 8px;font-size:clamp(28px,5vw,46px)} .hero p{font-size:18px}
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}.filters select,.filters input,.form input,.form select,.form textarea{border:2px solid #e8e4f7;border-radius:12px;padding:11px;background:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 7px 22px #493d8b12;border:2px solid transparent;transition:.2s}.card:hover{transform:translateY(-3px);border-color:#ddd5ff}
+.emoji{font-size:45px}.pill{display:inline-block;background:#f2efff;color:#5848bd;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:800;margin:3px 3px 0 0}
+.play{background:var(--green);color:#fff;padding:11px 18px;border-radius:12px;font-weight:900;margin-top:12px}.secondary{background:#eeeafb;color:#4d3db1;padding:10px 15px;border-radius:12px;font-weight:800}
+.screen{background:#fff;border-radius:24px;padding:28px;box-shadow:0 8px 28px #00000012}.center{text-align:center}
+.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}.answer{padding:20px;border-radius:18px;background:#f3f1ff;font-size:20px;font-weight:900}.answer:hover{background:#e5e0ff}
+.feedback{min-height:35px;font-size:20px;font-weight:900}.big{font-size:68px;font-weight:1000}
+.progress{height:12px;background:#eee;border-radius:99px;overflow:hidden}.progress>div{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));width:0}
+.form{display:grid;gap:12px}.form label{font-weight:800}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:180px}
+.preview-img{max-width:180px;max-height:130px;border-radius:15px;margin-top:8px}.custom-list{margin-top:20px}.custom-item{padding:12px;background:#faf9ff;border-radius:12px;margin:8px 0}
+.hidden{display:none!important}.note{background:#fff8d9;padding:14px;border-radius:14px;margin:12px 0}.danger{background:#ffe8ed;color:#b12d50}
+footer{text-align:center;padding:25px;color:#777}
+@media(max-width:650px){header{align-items:flex-start;flex-direction:column}.big{font-size:50px}}
+</style>
+</head>
+<body>
+<header>
+  <div><div class="logo">🌈 Tehilah EduFun</div><div class="tag">Learning Made Fun!</div></div>
+  <div class="stars">⭐ Stars: <span id="starCount">0</span></div>
+</header>
+<nav>
+  <button id="homeBtn" class="active" onclick="showHome()">🎮 Games</button>
+  <button id="teacherBtn" onclick="showTeacher()">👩🏽‍🏫 Teacher Studio</button>
+</nav>
+<main>
+<section id="home">
+  <div class="hero">
+    <h1>Choose a game and let's learn! 🎉</h1>
+    <p>Ready-made learning games for Nursery, Kindergarten and Primary learners.</p>
+    <div class="filters">
+      <select id="ageFilter" onchange="renderGames()"><option value="all">All levels</option><option>Nursery</option><option>Kindergarten</option><option>Primary</option></select>
+      <select id="subjectFilter" onchange="renderGames()"><option value="all">All subjects</option><option>Phonics & Reading</option><option>Maths</option><option>Science</option><option>General Knowledge</option><option>Social Studies</option><option>Creative Arts</option><option>PSED</option></select>
+      <input id="search" oninput="renderGames()" placeholder="Search games…">
+    </div>
+  </div>
+  <div id="gameGrid" class="grid"></div>
+</section>
+
+<section id="gameScreen" class="hidden">
+  <div class="screen">
+    <button class="secondary" onclick="showHome()">← Back to games</button>
+    <div id="gameContent"></div>
+  </div>
+</section>
+
+<section id="teacher" class="hidden">
+  <div class="hero">
+    <h1>👩🏽‍🏫 Teacher Studio</h1>
+    <p>Create your own question game and add a picture. Your custom games are saved <b>on this device</b> for free.</p>
+    <div class="note">💡 This first version needs no paid account, server or database. You can use it during online lessons by sharing your screen.</div>
+  </div>
+  <div class="screen">
+    <form id="customForm" class="form" onsubmit="saveCustom(event)">
+      <div class="row">
+        <div><label>Game title</label><input id="ctitle" required placeholder="e.g. My Phonics Challenge"></div>
+        <div><label>Level</label><select id="clevel"><option>Nursery</option><option>Kindergarten</option><option>Primary</option></select></div>
+      </div>
+      <div class="row">
+        <div><label>Subject</label><select id="csubject"><option>Phonics & Reading</option><option>Maths</option><option>Science</option><option>General Knowledge</option><option>Social Studies</option><option>Creative Arts</option><option>PSED</option></select></div>
+        <div><label>Emoji / icon</label><input id="cemoji" value="🎯" maxlength="3"></div>
+      </div>
+      <label>Question</label><textarea id="cquestion" required rows="3" placeholder="e.g. Which word begins with /b/?"></textarea>
+      <div class="row">
+        <input id="a1" required placeholder="Answer 1">
+        <input id="a2" required placeholder="Answer 2">
+        <input id="a3" placeholder="Answer 3">
+        <input id="a4" placeholder="Answer 4">
+      </div>
+      <label>Correct answer</label><select id="correct"><option value="0">Answer 1</option><option value="1">Answer 2</option><option value="2">Answer 3</option><option value="3">Answer 4</option></select>
+      <label>Optional picture</label><input id="pic" type="file" accept="image/*" onchange="previewPic(event)">
+      <img id="picPreview" class="preview-img hidden">
+      <div class="row"><button class="play" type="submit">💾 Save My Game</button><button class="secondary" type="button" onclick="clearCustom()">🗑️ Delete My Games</button></div>
+    </form>
+    <div class="custom-list"><h2>My Saved Games</h2><div id="customList"></div></div>
+  </div>
+</section>
+</main>
+<footer>Tehilah EduFun • Learning Made Fun! 🌟 • Free first version</footer>
+
+<script>
+const readyGames=[
+{id:'subitizing',title:'Subitizing Star',emoji:'⭐',levels:['Kindergarten','Primary'],subjects:['Maths'],desc:'Look quickly and tell how many you see.',type:'subitizing'},
+{id:'numbermatch',title:'Number Match',emoji:'🔢',levels:['Nursery','Kindergarten','Primary'],subjects:['Maths'],desc:'Match the number to the quantity.',type:'numbermatch'},
+{id:'phonics',title:'Phonics Detective',emoji:'🔤',levels:['Nursery','Kindergarten','Primary'],subjects:['Phonics & Reading'],desc:'Find the word that starts with the target sound.',type:'quiz',questions:[
+ ['Which word begins with /b/?',['sun','ball','cat','fish'],1],
+ ['Which word begins with /m/?',['map','dog','sun','pen'],0],
+ ['Which word begins with /s/?',['top','sun','man','leg'],1],
+ ['Which word begins with /f/?',['fish','bag','cat','hen'],0]]},
+{id:'cvc',title:'CVC Word Builder',emoji:'🧩',levels:['Kindergarten','Primary'],subjects:['Phonics & Reading'],desc:'Choose the word that matches the picture clue.',type:'quiz',questions:[
+ ['A small animal that says meow is…',['dog','cat','sun','pig'],1],
+ ['You sit on a…',['mat','fish','hen','cup'],0],
+ ['You can drink from a…',['sun','cup','bed','dog'],1]]},
+{id:'shapes',title:'Shape Safari',emoji:'🔷',levels:['Nursery','Kindergarten'],subjects:['Maths'],desc:'Identify common 2D shapes.',type:'quiz',questions:[
+ ['Which one has 3 sides?',['Circle','Triangle','Square','Oval'],1],
+ ['Which shape is round?',['Triangle','Rectangle','Circle','Square'],2],
+ ['Which shape has 4 equal sides?',['Circle','Square','Triangle','Oval'],1]]},
+{id:'addition',title:'Addition Race',emoji:'🏎️',levels:['Kindergarten','Primary'],subjects:['Maths'],desc:'Solve simple addition questions.',type:'quiz',questions:[
+ ['3 + 2 = ?',['4','5','6','7'],1],['5 + 4 = ?',['8','9','10','11'],1],['7 + 3 = ?',['9','10','11','12'],1],['6 + 2 = ?',['7','8','9','10'],1]]},
+{id:'science',title:'Little Scientist',emoji:'🔬',levels:['Kindergarten','Primary'],subjects:['Science'],desc:'Explore simple science facts.',type:'quiz',questions:[
+ ['Which one is a living thing?',['Rock','Tree','Chair','Ball'],1],
+ ['Which body part helps you see?',['Ear','Nose','Eye','Hand'],2],
+ ['What do plants need to grow?',['Water','Plastic','Stone','Toy'],0]]},
+{id:'gk',title:'Smart Kids Quiz',emoji:'🧠',levels:['Primary'],subjects:['General Knowledge'],desc:'Quick questions about the world around us.',type:'quiz',questions:[
+ ['How many days are in a week?',['5','6','7','8'],2],
+ ['Which animal is known as the king of the jungle?',['Lion','Goat','Rabbit','Fish'],0],
+ ['What colour do you get by mixing red and yellow?',['Green','Orange','Purple','Blue'],1]]},
+{id:'social',title:'My Community',emoji:'🏘️',levels:['Kindergarten','Primary'],subjects:['Social Studies'],desc:'People and places in our community.',type:'quiz',questions:[
+ ['Who helps sick people in a hospital?',['Doctor','Pilot','Farmer','Tailor'],0],
+ ['Where do we borrow books?',['Bank','Library','Market','Airport'],1],
+ ['Who teaches children at school?',['Teacher','Driver','Chef','Builder'],0]]},
+{id:'arts',title:'Colour Fun',emoji:'🎨',levels:['Nursery','Kindergarten'],subjects:['Creative Arts'],desc:'Explore colours and simple art ideas.',type:'quiz',questions:[
+ ['Which is a primary colour?',['Green','Purple','Red','Pink'],2],
+ ['Which colour is made by mixing blue and yellow?',['Orange','Green','Brown','Pink'],1]]},
+{id:'feelings',title:'Feelings Friends',emoji:'😊',levels:['Nursery','Kindergarten'],subjects:['PSED'],desc:'Recognise feelings and kind choices.',type:'quiz',questions:[
+ ['How might you feel when someone shares a toy with you?',['Happy','Angry','Sad','Scared'],0],
+ ['What is a kind thing to do when a friend is sad?',['Laugh at them','Help and comfort them','Take their toy','Ignore them'],1]]}
+];
+
+let customGames=JSON.parse(localStorage.getItem('tehilahCustomGames')||'[]');
+let stars=Number(localStorage.getItem('tehilahStars')||0); document.getElementById('starCount').textContent=stars;
+function allGames(){return [...readyGames,...customGames]}
+function renderGames(){
+ const age=document.getElementById('ageFilter').value, sub=document.getElementById('subjectFilter').value, q=document.getElementById('search').value.toLowerCase();
+ const games=allGames().filter(g=>(age==='all'||g.levels.includes(age))&&(sub==='all'||g.subjects.includes(sub))&&(g.title.toLowerCase().includes(q)||g.desc.toLowerCase().includes(q)));
+ document.getElementById('gameGrid').innerHTML=games.map(g=>`<div class="card"><div class="emoji">${g.emoji}</div><h2>${g.title}</h2><p>${g.desc}</p><div>${g.levels.map(x=>`<span class="pill">${x}</span>`).join('')}</div><div>${g.subjects.map(x=>`<span class="pill">${x}</span>`).join('')}</div><button class="play" onclick="launch('${g.id}')">▶ Play Game</button></div>`).join('')||'<div class="card"><h2>No games found</h2><p>Try another level, subject or search.</p></div>';
+}
+function findGame(id){return allGames().find(g=>g.id===id)}
+function showHome(){hideAll();document.getElementById('home').classList.remove('hidden');document.getElementById('homeBtn').classList.add('active');document.getElementById('teacherBtn').classList.remove('active');renderGames()}
+function showTeacher(){hideAll();document.getElementById('teacher').classList.remove('hidden');document.getElementById('teacherBtn').classList.add('active');document.getElementById('homeBtn').classList.remove('active');renderCustom()}
+function hideAll(){['home','gameScreen','teacher'].forEach(x=>document.getElementById(x).classList.add('hidden'))}
+function launch(id){const g=findGame(id); hideAll();document.getElementById('gameScreen').classList.remove('hidden'); if(g.type==='subitizing') subitizing(); else if(g.type==='numbermatch') numbermatch(); else playQuiz(g)}
+function addStar(n=1){stars+=n;localStorage.setItem('tehilahStars',stars);document.getElementById('starCount').textContent=stars}
+function playQuiz(g){
+ let i=0,score=0;
+ function draw(){
+  const [q,opts,ans]=g.questions[i]; const pct=(i/g.questions.length)*100;
+  document.getElementById('gameContent').innerHTML=`<div class="center"><div class="emoji">${g.emoji}</div><h1>${g.title}</h1><div class="progress"><div style="width:${pct}%"></div></div><p>Question ${i+1} of ${g.questions.length}</p><h2>${q}</h2><div class="answers">${opts.map((o,j)=>`<button class="answer" onclick="answer(${j===ans},this)">${o}</button>`).join('')}</div><div id="fb" class="feedback"></div></div>`;
+ }
+ window.answer=(correct,btn)=>{document.querySelectorAll('.answer').forEach(b=>b.disabled=true);const fb=document.getElementById('fb');if(correct){score++;addStar();fb.textContent='🎉 Correct! +1 star';btn.style.background='#d8f8e7'}else{fb.textContent='💛 Nice try! Let’s learn from it.';btn.style.background='#ffe1e8'}setTimeout(()=>{i++;i<g.questions.length?draw():finish(score,g.questions.length)},750)};
+ draw();
+}
+function finish(score,total){document.getElementById('gameContent').innerHTML=`<div class="center"><div class="big">🏆</div><h1>Great job!</h1><h2>You scored ${score} / ${total}</h2><p>You earned ${score} star${score===1?'':'s'}.</p><button class="play" onclick="showHome()">🎮 Play another game</button></div>`}
+function subitizing(){
+ let round=0,score=0;
+ function draw(){
+  const n=Math.floor(Math.random()*6)+1, dots='●'.repeat(n);
+  document.getElementById('gameContent').innerHTML=`<div class="center"><h1>⭐ Subitizing Star</h1><p>Look quickly. How many dots?</p><div class="big" style="letter-spacing:12px">${dots}</div><div class="answers">${[n-1,n,n+1,n+2].filter(x=>x>0).map(x=>`<button class="answer" onclick="subAns(${x===n},${n})">${x}</button>`).join('')}</div><div id="fb" class="feedback">Round ${round+1} of 5</div></div>`;
+ }
+ window.subAns=(ok,n)=>{const fb=document.getElementById('fb');if(ok){score++;addStar();fb.textContent='🌟 Correct!'}else fb.textContent=`The answer was ${n}. Keep going!`;round++;setTimeout(()=>round<5?draw():finish(score,5),650)}
+ draw();
+}
+function numbermatch(){
+ let n=Math.floor(Math.random()*10)+1,score=0,round=0;
+ function draw(){let options=[n];while(options.length<4){let x=Math.max(1,Math.min(10,n+Math.floor(Math.random()*7)-3));if(!options.includes(x))options.push(x)}options.sort(()=>Math.random()-.5);
+ document.getElementById('gameContent').innerHTML=`<div class="center"><h1>🔢 Number Match</h1><p>How many objects?</p><div class="big" style="font-size:50px">${'🍎'.repeat(n)}</div><div class="answers">${options.map(x=>`<button class="answer" onclick="numAns(${x===n})">${x}</button>`).join('')}</div><div id="fb" class="feedback">Round ${round+1} of 5</div></div>`}
+ window.numAns=ok=>{const fb=document.getElementById('fb');if(ok){score++;addStar();fb.textContent='🎉 Correct!'}else fb.textContent='💛 Try again next time!';round++;n=Math.floor(Math.random()*10)+1;setTimeout(()=>round<5?draw():finish(score,5),650)}
+ draw();
+}
+function previewPic(e){const f=e.target.files[0],img=document.getElementById('picPreview');if(!f){img.classList.add('hidden');return}const r=new FileReader();r.onload=()=>{img.src=r.result;img.classList.remove('hidden')};r.readAsDataURL(f)}
+function saveCustom(e){e.preventDefault();const file=document.getElementById('pic').files[0];const base={id:'c'+Date.now(),title:ctitle.value,emoji:cemoji.value||'🎯',levels:[clevel.value],subjects:[csubject.value],desc:'A teacher-created Tehilah EduFun game',type:'quiz',questions:[[cquestion.value,[a1.value,a2.value,a3.value,a4.value].filter(Boolean),Number(correct.value)]]};
+ if(file){const r=new FileReader();r.onload=()=>{base.image=r.result;customGames.push(base);persistCustom();e.target.reset();document.getElementById('picPreview').classList.add('hidden');alert('Game saved!');renderCustom();renderGames()};r.readAsDataURL(file)}else{customGames.push(base);persistCustom();e.target.reset();alert('Game saved!');renderCustom();renderGames()}}
+function persistCustom(){localStorage.setItem('tehilahCustomGames',JSON.stringify(customGames))}
+function renderCustom(){document.getElementById('customList').innerHTML=customGames.length?customGames.map(g=>`<div class="custom-item"><b>${g.emoji} ${g.title}</b> — ${g.levels[0]} / ${g.subjects[0]}<br><button class="secondary" onclick="launch('${g.id}')">▶ Play</button></div>`).join(''):'<p>No custom games yet.</p>'}
+function clearCustom(){if(confirm('Delete all your saved custom games on this device?')){customGames=[];persistCustom();renderCustom();renderGames()}}
+renderGames();renderCustom();
+</script>
+</body>
+</html>
